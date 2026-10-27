@@ -769,10 +769,16 @@ on_error:
         // Update position after UI change
         Dispatcher.BeginInvoke(() => UpdatePosition(), DispatcherPriority.Background);
 
-        Dispatcher.Invoke(() =>
+        // With auto-hide enabled, visibility is fully managed by the auto-hide logic above.
+        // Forcing Visible here would re-show the widget on every media event while paused,
+        // making it flicker (show for ~750 ms, hide, show again on the next event).
+        if (!SettingsManager.Current.TaskbarWidgetAutoHide)
         {
-            Visibility = Visibility.Visible;
-        });
+            Dispatcher.Invoke(() =>
+            {
+                Visibility = Visibility.Visible;
+            });
+        }
     }
 
     public void RefreshAppVolumeTooltip()

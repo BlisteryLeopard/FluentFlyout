@@ -1,0 +1,38 @@
+name: Build portable (personal fork)
+
+# Builds a ready-to-run FluentFlyout (GitHub Release configuration, all features unlocked).
+# No signing certificate needed. Run it manually from the "Actions" tab of your fork.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Publish
+        run: >
+          dotnet publish FluentFlyoutWPF/FluentFlyout.csproj
+          -c "GitHub Release"
+          -r win-x64
+          --self-contained true
+          -p:Platform=x64
+          -o publish
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: FluentFlyout-portable-win-x64
+          path: publish/

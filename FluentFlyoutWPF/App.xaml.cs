@@ -22,6 +22,9 @@ public partial class App : Application
             NLog.LogManager.Flush(); // Ensure logs are written before application dies
         };
 
+        // keep Battery Saver / Efficiency mode from throttling the app (timers, widget updates, auto-hide)
+        PowerThrottlingHelper.DisableThrottling();
+
         // Register AUMID for toast notifications
         ToastNotificationManagerCompat.OnActivated += Notifications.HandleNotificationActivation;
 
